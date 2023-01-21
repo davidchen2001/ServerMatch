@@ -30,7 +30,7 @@ async def hello(ctx):
   await ctx.channel.send("Hello World!")
 
 try:
-    keep_alive()
+    #keep_alive()
     my_secret = os.environ['DISCORD_BOT_SECRET']
     bot.run(my_secret)
 except discord.HTTPException as e:
