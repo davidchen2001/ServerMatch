@@ -32,6 +32,18 @@ async def hello(ctx):
   print("Sending command")
   await ctx.channel.send("Hello World!")
 
+@bot.event
+async def on_guild_channel_create(channel):
+    await print('the channel has been created')
+    return
+
+@bot.command()
+async def create_roles_channel(ctx):
+  channel = discord.utils.get(bot.get_all_channels(), guild__name=ctx.message.guild.name, name='roles')
+
+  if channel == None:
+    bot.on_guild_channel_create('roles')
+
 try:
     #keep_alive()
     my_secret = os.environ['DISCORD_BOT_SECRET']
