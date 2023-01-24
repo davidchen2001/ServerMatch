@@ -8,7 +8,7 @@ bot = commands.Bot(command_prefix="!",
                       intents=discord.Intents.all())
 
 @bot.event
-async def on_ready():
+async def on_connect():
     print('We have logged in as {0.user}'.format(bot))
 
 @bot.event
@@ -19,9 +19,12 @@ async def on_message(message):
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
 
+    await bot.process_commands(message)
+
 @bot.event
 async def on_command_error(ctx, exception):
-  #When a command fails
+  #When a command 
+  print("Command Failed")
   await ctx.send(f"Error: {exception}", reference = ctx.message)
   
 @bot.command()
