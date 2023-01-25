@@ -32,17 +32,16 @@ async def hello(ctx):
   print("Sending command")
   await ctx.channel.send("Hello World!")
 
-@bot.event
-async def on_guild_channel_create(channel):
-    await print('the channel has been created')
-    return
-
 @bot.command()
-async def create_roles_channel(ctx):
+async def createRolesChannel(ctx):
   channel = discord.utils.get(bot.get_all_channels(), guild__name=ctx.message.guild.name, name='roles')
 
-  if channel == None:
-    bot.on_guild_channel_create('roles')
+  guild = ctx.guild
+
+  if channel == None and ctx.author.guild_permissions.manage_channels:
+    await guild.create_text_channel(name="roles")
+  else:
+    await ctx.channel.send("roles channel already exists")
 
 try:
     #keep_alive()
