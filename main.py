@@ -2,10 +2,13 @@ import discord
 from discord.ext import commands 
 import os
 from keep_alive import keep_alive
+from send_match import MatchSchedule
 
 bot = commands.Bot(command_prefix="!",
                       case_insensitive = True,
                       intents=discord.Intents.all())
+
+match_schedule = MatchSchedule()
 
 @bot.event
 async def on_connect():
@@ -42,6 +45,26 @@ async def createRolesChannel(ctx):
     await guild.create_text_channel(name="roles")
   else:
     await ctx.channel.send("roles channel already exists")
+
+@bot.command()
+async def directMessage(ctx, user: discord.User, *, message=None):
+    message = message or "This Message is sent via DM"
+    await user.send(message)
+
+@bot.command()
+async def setMatchSchedule(ctx, message=None):
+  if message != None:
+    scheduleParams = message.split()
+    
+  if message == None or len(scheduleParams) < 2:
+    await ctx.channel.send("Incorrect use of command. Format: !setMatchSchedule {frequency: monthly, weekly, daily} {time: 00:00 in 24 hour time} {day: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday (optional if frequency is daily)}")
+  else:
+    match_schedule.setSchedule(scheduleParams[0], scheduleParams[1], scheduleParams[2])
+    confirmationMessage = "Schedule has been set to " + scheduleParams[0] + " " + scheduleParams[1] + " " + scheduleParams[2]
+    await ctx.channel.send(confirmationMessage)
+
+def parseSchedule():
+  return match_schedule.generateSchedule()
 
 try:
     #keep_alive()
