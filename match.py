@@ -26,6 +26,7 @@ class Match:
       secondUser = users[secondIndex]
 
       matches[firstUser.id] = secondUser.id
+      matches[secondUser.id] = firstUser.id
 
       users.pop(firstIndex)
       users.pop(secondIndex)

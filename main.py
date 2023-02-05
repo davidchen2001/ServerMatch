@@ -89,22 +89,29 @@ async def sendMatch(ctx):
 
   listOfUsers = []
   userIdMap = {}
+  userToIdMap = {}
   
   for user in ctx.guild.members:
     if role in user.roles:
       userIdMap[user.id] = user
+      userToIdMap[user] = user.id
       newUser = Member(user.id, user.name, user.roles)
       listOfUsers.append(newUser)
 
   matches = match.randomMatch(listOfUsers)
 
-  for userId in matches:
-    
-    secondUserId = matches[userId]
-    firstUser = userIdMap[userId]
-
-    #await firstUserId.send(secondUserId)
-  
+  for user in ctx.guild.members:
+    if role in user.roles:
+      id = userToIdMap[user]
+      firstUser = userIdMap[id]
+      secondUserId = matches[id]
+      secondUser = userIdMap[secondUserId]
+      
+      try:
+        directMessage = firstUser.createMessage(secondUser)
+        await user.send(directMessage)
+      except:
+        print("Message Not Delivered")
 
 def parseSchedule():
   return match_schedule.generateSchedule()

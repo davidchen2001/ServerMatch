@@ -20,7 +20,10 @@ class Member:
     
   def getRoles(self):
     return self.roles
-  
+
+  def createMessage(self, otherUser):
+    message = "You have been matched with " + otherUser.name + " with ID: " + otherUser.id + ". Please message them at your earliest convienience to set up a time to chat"
+    return message
      
   
   
