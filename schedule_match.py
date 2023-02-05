@@ -41,9 +41,9 @@ class MatchSchedule:
   def generateSchedule(self):
 
     if self.daily == True:
-      return schedule.every().day().at(time)
+      return schedule.every().day().at(self.time)
 
-    elif self.weekly == True:
+    
       #if self.weekly == 
       
       #return schedule.every().
