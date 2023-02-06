@@ -5,10 +5,10 @@ RECOMMEND = "RECOMMENDER"
 
 class Match:
 
-  algorithm = ""
+  __algorithm = ""
 
   def __init__(self):
-    self.algorithm = DEFAULT
+    self.__algorithm = DEFAULT
 
   def randomMatch(self, users):
     matches = {}
