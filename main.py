@@ -72,7 +72,6 @@ async def getUsersWithChatRole(ctx):
   role = discord.utils.find(
     lambda r: r.name == "Coffee Chat", ctx.guild.roles)
 
-  #listOfUsers = []
   message = "Users with Coffee Chat role include:\n "
 
   for user in ctx.guild.members:
@@ -93,9 +92,9 @@ async def sendMatch(ctx):
   
   for user in ctx.guild.members:
     if role in user.roles:
-      userIdMap[user.id] = user
+      newUser = Member(user.id, user.discriminator, user.name, user.roles)
+      userIdMap[user.id] = newUser
       userToIdMap[user] = user.id
-      newUser = Member(user.id, user.name, user.roles)
       listOfUsers.append(newUser)
 
   matches = match.randomMatch(listOfUsers)
@@ -108,7 +107,9 @@ async def sendMatch(ctx):
       secondUser = userIdMap[secondUserId]
       
       try:
+        
         directMessage = firstUser.createMessage(secondUser)
+        
         await user.send(directMessage)
       except:
         print("Message Not Delivered")
