@@ -5,35 +5,39 @@ import schedule
 #from main import bot
 
 class MatchSchedule:  
-  monthly = False 
-  weekly = True
-  daily = False 
-  day = "friday"
-  time = "10:00"
+  __monthly = False 
+  __weekly = True
+  __daily = False 
+  __day = ""
+  __time = ""
 
   def __init__(self):
-    return
+    self.__monthly = False
+    self.__weekly = True
+    self.__daily = False
+    self.__day = "friday"
+    self.__time = "10:00"
 
   def setSchedule(self, frequency, time, day):
 
     frequency = frequency.toLowerCase()
-    day = day.toLowerCase()
-    time = time.toUpperCase()
+    self.__day = day.toLowerCase()
+    self.__time = time.toUpperCase()
 
     if frequency == "monthly":
-      self.monthly = True
-      self.weekly = False
-      self.daily = False
+      self.__monthly = True
+      self.__weekly = False
+      self.__daily = False
 
     elif frequency == "daily":
-      self.daily = False
-      self.weekly = False 
-      self.monthly = False
+      self.__daily = False
+      self.__weekly = False 
+      self.__monthly = False
 
     else:
-      self.weekly = True
-      self.daily = False
-      self.monthly = False 
+      self.__weekly = True
+      self.__daily = False
+      self.__monthly = False 
 
     self.time = time
     self.day = day
