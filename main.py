@@ -4,8 +4,10 @@ import os
 from os import system
 from keep_alive import keep_alive
 from schedule_match import MatchSchedule
+from schedule_match import DAILY, WEEKLY, MONTHLY
 from member import Member
 from match import Match
+import datetime
 
 bot = commands.Bot(command_prefix="!",
                       case_insensitive = True,
@@ -17,6 +19,11 @@ match = Match()
 @bot.event
 async def on_connect():
     print('We have logged in as {0.user}'.format(bot))
+
+@bot.event 
+async def on_ready():
+   if not testCheckSchedule.is_running():
+      testCheckSchedule.start()
 
 @bot.event
 async def on_message(message):
@@ -83,6 +90,27 @@ async def getUsersWithChatRole(ctx):
 
 @bot.command()
 async def sendMatch(ctx):
+  await matchUsers(ctx)
+
+@tasks.loop(minutes=60)
+async def checkSchedule(ctx):
+  schedule = match.generateSchedule()
+  currentTime = datetime.now()
+  time = currentTime.strftime("%H:%M")
+  day = currentTime.strtime("%A")
+
+  if schedule.getFrequency() == DAILY:
+    if time == schedule.getTime():
+      await matchUsers(ctx)
+  elif schedule.getFrequency() == WEEKLY:
+    if time == schedule.getTime() and day == schedule.getDay():
+      await matchUsers(ctx)
+
+@tasks.loop(minutes=1)
+async def testCheckSchedule(ctx):
+  await matchUsers(ctx)
+
+async def matchUsers(ctx):
   role = discord.utils.find(
     lambda r: r.name == "Coffee Chat", ctx.guild.roles)
 
@@ -113,11 +141,6 @@ async def sendMatch(ctx):
         await user.send(directMessage)
       except:
         print("Message Not Delivered")
-
-@tasks.loop(minutes=60)
-async def checkSchedule():
-  return match.generateSchedule()
-
 
 def parseSchedule():
   return match_schedule.generateSchedule()
