@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands 
+from discord.ext import commands, tasks
 import os
 from os import system
 from keep_alive import keep_alive
@@ -113,6 +113,11 @@ async def sendMatch(ctx):
         await user.send(directMessage)
       except:
         print("Message Not Delivered")
+
+@tasks.loop(minutes=60)
+async def checkSchedule():
+  return match.generateSchedule()
+
 
 def parseSchedule():
   return match_schedule.generateSchedule()

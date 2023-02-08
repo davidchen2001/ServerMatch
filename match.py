@@ -35,6 +35,8 @@ class Match:
 
       n += 2
 
+    #Consider case of odd number of matches
+    #Consider number of desired matches
     return matches
 
     
