@@ -25,8 +25,9 @@ async def on_connect():
 
 @bot.event 
 async def on_ready():
-   if not testCheckSchedule.is_running():
-      testCheckSchedule.start()
+  print("Ready")
+   #if not testCheckSchedule.is_running():
+      #testCheckSchedule.start()
 
 @bot.event
 async def on_message(message):
@@ -125,7 +126,6 @@ async def matchUsers(ctx):
     if role in user.roles:
       newUser = Member(user.id, user.discriminator, user.name, user.roles)
       db[user.id] = newUser
-      db[newUser] = user.id
       
       userIdMap[user.id] = newUser
       userToIdMap[user] = user.id
@@ -153,9 +153,9 @@ def parseSchedule():
   return match_schedule.generateSchedule()
 
 @bot.command()
-async def setIntroduction(ctx, introduction, interaction: discord.Interaction):
+async def setIntroduction(ctx, *, introduction):
   for user in ctx.guild.members:
-    if user.id == interaction.user.id:
+    if user.id == ctx.author.id:
       interactionUser = db[user.id]
 
       if interactionUser == None:
