@@ -2,12 +2,15 @@ import discord
 from discord.ext import commands, tasks
 import os
 from os import system
+import datetime
+from replit import db
+
 from keep_alive import keep_alive
 from schedule_match import MatchSchedule
 from schedule_match import DAILY, WEEKLY, MONTHLY
 from member import Member
 from match import Match
-import datetime
+
 
 bot = commands.Bot(command_prefix="!",
                       case_insensitive = True,
@@ -121,8 +124,12 @@ async def matchUsers(ctx):
   for user in ctx.guild.members:
     if role in user.roles:
       newUser = Member(user.id, user.discriminator, user.name, user.roles)
+      db[user.id] = newUser
+      db[newUser] = user.id
+      
       userIdMap[user.id] = newUser
       userToIdMap[user] = user.id
+      
       listOfUsers.append(newUser)
 
   matches = match.randomMatch(listOfUsers)
@@ -144,6 +151,18 @@ async def matchUsers(ctx):
 
 def parseSchedule():
   return match_schedule.generateSchedule()
+
+@bot.command()
+async def setIntroduction(ctx, introduction, interaction: discord.Interaction):
+  for user in ctx.guild.members:
+    if user.id == interaction.user.id:
+      interactionUser = db[user.id]
+
+      if interactionUser == None:
+        newUser = Member(user.id, user.discriminator, user.name, user.roles)
+        db[user.id] = newUser
+
+      newUser.setIntroduction(introduction)
 
 try:
     #keep_alive()
