@@ -4,6 +4,7 @@ import os
 from os import system
 import datetime
 from replit import db
+import json 
 
 from keep_alive import keep_alive
 from schedule_match import MatchSchedule
@@ -124,8 +125,12 @@ async def matchUsers(ctx):
   
   for user in ctx.guild.members:
     if role in user.roles:
-      newUser = Member(user.id, user.discriminator, user.name, user.roles)
-      db[user.id] = newUser
+      if user.id not in db.keys():
+        newUser = Member(user.id, user.discriminator, user.name, user.roles)
+        db[user.id] = newUser.toJSON()
+
+      else:
+        newUser = db[user.id]  
       
       userIdMap[user.id] = newUser
       userToIdMap[user] = user.id
@@ -154,15 +159,21 @@ def parseSchedule():
 
 @bot.command()
 async def setIntroduction(ctx, *, introduction):
+  
   for user in ctx.guild.members:
+    
     if user.id == ctx.author.id:
-      interactionUser = db[user.id]
-
-      if interactionUser == None:
+      
+      if user.id not in db.keys():
         newUser = Member(user.id, user.discriminator, user.name, user.roles)
-        db[user.id] = newUser
+        newUser.setIntroduction(introduction)
+        db[user.id] = newUser.toJSON()
 
-      newUser.setIntroduction(introduction)
+      else:
+        newUser = db[user.id]
+      
+        newUser.setIntroduction(introduction)
+        db[user.id] = newUser.toJSON()
 
 try:
     #keep_alive()

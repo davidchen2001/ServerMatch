@@ -1,3 +1,5 @@
+import json
+
 class Member:
 
   __id = ""
@@ -33,11 +35,13 @@ class Member:
   def createMessage(self, otherUser):
     message = "You have been matched with " + otherUser.getName() + "#" + otherUser.getTag() + ". Please message them at your earliest convienience to set up a time to chat."
 
-    if self.__introduction != "":
+    if len(self.__introduction) > 0:
       message += "Here is their introduction: " + self.__introduction
     
     return message
      
-  
+  def toJSON(self):
+    return json.dumps(self, default=lambda o: o.__dict__, 
+                      sort_keys=True, indent=4)  
   
   
