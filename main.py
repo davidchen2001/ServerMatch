@@ -3,15 +3,15 @@ from discord.ext import commands, tasks
 import os
 from os import system
 import datetime
-from replit import db
 import json 
+import pymongo
 
 from keep_alive import keep_alive
 from schedule_match import MatchSchedule
 from schedule_match import DAILY, WEEKLY, MONTHLY
 from member import Member
 from match import Match
-
+from config import mongoURI
 
 bot = commands.Bot(command_prefix="!",
                       case_insensitive = True,
@@ -19,6 +19,9 @@ bot = commands.Bot(command_prefix="!",
 
 match_schedule = MatchSchedule()
 match = Match()
+
+client = pymongo.MongoClient(mongoURI)
+db = client.get_database("comp4905")
 
 @bot.event
 async def on_connect():
@@ -122,19 +125,21 @@ async def matchUsers(ctx):
   listOfUsers = []
   userIdMap = {}
   userToIdMap = {}
+
+  members = db.members
   
   for user in ctx.guild.members:
     if role in user.roles:
-      if user.id not in db.keys():
-        newUser = Member(user.id, user.discriminator, user.name, user.roles)
-        db[user.id] = newUser.toJSON()
+      newUser = Member(user.id, user.discriminator, user.name, user.roles)
 
-      else:
-        newUser = db[user.id]  
-      
       userIdMap[user.id] = newUser
       userToIdMap[user] = user.id
-      
+
+      #If user exists in db, retrieve so you can retrieve their introduction
+      member = members.find_one({"_id": user.id})
+      if member != None:
+        newUser.setIntroduction(member["introduction"])
+
       listOfUsers.append(newUser)
 
   matches = match.randomMatch(listOfUsers)
@@ -151,7 +156,9 @@ async def matchUsers(ctx):
         directMessage = firstUser.createMessage(secondUser)
         
         await user.send(directMessage)
+        
       except:
+        
         print("Message Not Delivered")
 
 def parseSchedule():
@@ -159,21 +166,24 @@ def parseSchedule():
 
 @bot.command()
 async def setIntroduction(ctx, *, introduction):
+
+  members = db.members
   
   for user in ctx.guild.members:
     
     if user.id == ctx.author.id:
-      
-      if user.id not in db.keys():
+
+      member = members.find_one({"_id": user.id})
+
+      if member != None:
+        update = { "$set" : {"introduction": introduction} }
+        members.update(member, update)
+        
+      else:
         newUser = Member(user.id, user.discriminator, user.name, user.roles)
         newUser.setIntroduction(introduction)
-        db[user.id] = newUser.toJSON()
-
-      else:
-        newUser = db[user.id]
-      
-        newUser.setIntroduction(introduction)
-        db[user.id] = newUser.toJSON()
+        
+        members.insert_one(newUser.toIntroductionDict())    
 
 try:
     #keep_alive()

@@ -32,11 +32,14 @@ class Member:
   def setIntroduction(self, introduction):
     self.__introduction = introduction
 
+  def getIntroduction(self):
+    return self.__introduction
+
   def createMessage(self, otherUser):
     message = "You have been matched with " + otherUser.getName() + "#" + otherUser.getTag() + ". Please message them at your earliest convienience to set up a time to chat."
 
-    if len(self.__introduction) > 0:
-      message += "Here is their introduction: " + self.__introduction
+    if len(otherUser.getIntroduction()) > 0:
+      message += "Here is their introduction: " + otherUser.getIntroduction()
     
     return message
      
@@ -44,4 +47,21 @@ class Member:
     return json.dumps(self, default=lambda o: o.__dict__, 
                       sort_keys=True, indent=4)  
   
-  
+  def toDict(self):
+    dict = {}
+
+    dict["_id"] = self.__id
+    dict["tag"] = self.__tag
+    dict["name"] = self.__name
+    dict["roles"] = self.__roles
+    dict["introduction"] = self.__introduction 
+    
+    return dict 
+
+  def toIntroductionDict(self):
+    dict = {}
+
+    dict["_id"] = self.__id
+    dict["introduction"] = self.__introduction
+
+    return dict
