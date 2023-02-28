@@ -36,10 +36,11 @@ class Member:
     return self.__introduction
 
   def createMessage(self, otherUser):
-    message = "You have been matched with " + otherUser.getName() + "#" + otherUser.getTag() + ". Please message them at your earliest convienience to set up a time to chat."
+    
+    message = "You have been matched with " + otherUser.getName() + "#" + otherUser.getTag() + ". Please message them at your earliest convienience to set up a time to chat. \n"
 
     if len(otherUser.getIntroduction()) > 0:
-      message += "Here is their introduction: " + otherUser.getIntroduction()
+      message += "Here is their introduction: \n" + otherUser.getIntroduction()
     
     return message
      

@@ -131,15 +131,13 @@ async def matchUsers(ctx):
   for user in ctx.guild.members:
     if role in user.roles:
       newUser = Member(user.id, user.discriminator, user.name, user.roles)
-
-      userIdMap[user.id] = newUser
-      userToIdMap[user] = user.id
-
       #If user exists in db, retrieve so you can retrieve their introduction
       member = members.find_one({"_id": user.id})
       if member != None:
         newUser.setIntroduction(member["introduction"])
 
+      userIdMap[user.id] = newUser
+      userToIdMap[user] = user.id
       listOfUsers.append(newUser)
 
   matches = match.randomMatch(listOfUsers)
