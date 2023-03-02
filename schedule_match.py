@@ -34,9 +34,9 @@ class MatchSchedule:
   
   def setSchedule(self, frequency, time, day):
 
-    self.__frequency = frequency.toLowerCase()
-    self.__day = day.toLowerCase()
-    self.__time = time.toUpperCase()
+    self.__frequency = frequency
+    self.__day = day
+    self.__time = time
     self.__initialized = True
 
   

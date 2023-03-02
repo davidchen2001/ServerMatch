@@ -68,44 +68,35 @@ async def directMessage(ctx, user: discord.User, *, message=None):
     await user.send(message)
 
 @bot.command()
-async def setMatchSchedule(ctx, message=None):
-  if message != None:
-    scheduleParams = message.split(" ")
+async def setMatchSchedule(ctx, frequency=None, time=None, day=None):
     
-  if message == None or len(scheduleParams) < 2:
+  if frequency == None and time == None:
     await ctx.channel.send("Incorrect use of command. Format: !setMatchSchedule {frequency: daily, weekly} {time: 00:00 in 24 hour time} {day: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday (optional if frequency is daily)}")
-
-    print(message)
     
   else:
 
-    frequency = scheduleParams[0]
-
-    hour_min = scheduleParams[1].split(":")
-    hour = hour_min[0]
-    min = hour_min[1]
+    hour_min = str(time).split(":")
+    hour = int(hour_min[0])
+    min = int(hour_min[1])
 
     if match_schedule.getInitialized() == True:
       scheduler.remove_all_jobs()
       
     if frequency == DAILY:
-      scheduler.add_job(sendMatch, "interval", name="schedule", args=ctx, hour=hour, minute = min)
+      scheduler.add_job(sendMatch, "interval", name="schedule", args=[ctx], hours=hour, minutes = min)
       
     elif frequency == WEEKLY:
       
-      day = scheduleParams[2][:3].lower()
-      scheduler.add_job(sendMatch, "interval", args=ctx, day_of_week=day, hour=hour, minute = min)
+      day = day.lower()
+      scheduler.add_job(sendMatch, "interval", args=[ctx], day_of_week=day, hours=hour, minutes = min)
     
-  confirmationMessage = "Schedule has been set to " + scheduleParams[0] + " " + scheduleParams[1]
+  confirmationMessage = "Schedule has been set to " + frequency + " " + time
 
-  if scheduleParams[2] != None:
-    match_schedule.setSchedule(scheduleParams[0], scheduleParams[1], scheduleParams[2])
-    
+  if day != None:
     confirmationMessage += " "
-    confirmationMessage += scheduleParams[2]
-  else:
-    match_schedule.setSchedule(scheduleParams[0], scheduleParams[1])
+    confirmationMessage += day
 
+  match_schedule.setSchedule(frequency, time, day)
   await ctx.channel.send(confirmationMessage)
 
 @bot.command()
