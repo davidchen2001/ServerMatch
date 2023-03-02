@@ -1,10 +1,5 @@
-import discord
-from discord.ext import commands 
-import schedule
-
 DAILY = "daily"
 WEEKLY = "weekly"
-MONTHLY = "monthly"
 
 MONDAY = "monday"
 TUESDAY = "tuesday"
@@ -23,6 +18,7 @@ class MatchSchedule:
     self.__frequency = WEEKLY
     self.__day = FRIDAY
     self.__time = "10:00"
+    self.__initialized = False 
 
   def getFrequency(self):
     return self.__frequency
@@ -32,11 +28,15 @@ class MatchSchedule:
 
   def getTime(self):
     return self.__time 
+
+  def getInitialized(self):
+    return self.__initialized
   
   def setSchedule(self, frequency, time, day):
 
     self.__frequency = frequency.toLowerCase()
     self.__day = day.toLowerCase()
     self.__time = time.toUpperCase()
+    self.__initialized = True
 
   

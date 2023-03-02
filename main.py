@@ -1,14 +1,13 @@
 import discord
 from discord.ext import commands, tasks
 import os
-from os import system
 import datetime
-import json 
 import pymongo
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from keep_alive import keep_alive
 from schedule_match import MatchSchedule
-from schedule_match import DAILY, WEEKLY, MONTHLY
+from schedule_match import DAILY, WEEKLY
 from member import Member
 from match import Match
 from config import mongoURI
@@ -23,15 +22,13 @@ match = Match()
 client = pymongo.MongoClient(mongoURI)
 db = client.get_database("comp4905")
 
+scheduler = BackgroundScheduler()
+SCHEDULE_NAME = "Bot Schedule"
+
 @bot.event
 async def on_connect():
     print('We have logged in as {0.user}'.format(bot))
-
-@bot.event 
-async def on_ready():
-  print("Ready")
-   #if not testCheckSchedule.is_running():
-      #testCheckSchedule.start()
+    scheduler.start()
 
 @bot.event
 async def on_message(message):
@@ -73,14 +70,43 @@ async def directMessage(ctx, user: discord.User, *, message=None):
 @bot.command()
 async def setMatchSchedule(ctx, message=None):
   if message != None:
-    scheduleParams = message.split()
+    scheduleParams = message.split(" ")
     
   if message == None or len(scheduleParams) < 2:
-    await ctx.channel.send("Incorrect use of command. Format: !setMatchSchedule {frequency: monthly, weekly, daily} {time: 00:00 in 24 hour time} {day: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday (optional if frequency is daily)}")
+    await ctx.channel.send("Incorrect use of command. Format: !setMatchSchedule {frequency: daily, weekly} {time: 00:00 in 24 hour time} {day: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday (optional if frequency is daily)}")
+
+    print(message)
+    
   else:
+
+    frequency = scheduleParams[0]
+
+    hour_min = scheduleParams[1].split(":")
+    hour = hour_min[0]
+    min = hour_min[1]
+
+    if match_schedule.getInitialized() == True:
+      scheduler.remove_all_jobs()
+      
+    if frequency == DAILY:
+      scheduler.add_job(sendMatch, "interval", name="schedule", args=ctx, hour=hour, minute = min)
+      
+    elif frequency == WEEKLY:
+      
+      day = scheduleParams[2][:3].lower()
+      scheduler.add_job(sendMatch, "interval", args=ctx, day_of_week=day, hour=hour, minute = min)
+    
+  confirmationMessage = "Schedule has been set to " + scheduleParams[0] + " " + scheduleParams[1]
+
+  if scheduleParams[2] != None:
     match_schedule.setSchedule(scheduleParams[0], scheduleParams[1], scheduleParams[2])
-    confirmationMessage = "Schedule has been set to " + scheduleParams[0] + " " + scheduleParams[1] + " " + scheduleParams[2]
-    await ctx.channel.send(confirmationMessage)
+    
+    confirmationMessage += " "
+    confirmationMessage += scheduleParams[2]
+  else:
+    match_schedule.setSchedule(scheduleParams[0], scheduleParams[1])
+
+  await ctx.channel.send(confirmationMessage)
 
 @bot.command()
 async def getUsersWithChatRole(ctx):
@@ -98,24 +124,6 @@ async def getUsersWithChatRole(ctx):
 
 @bot.command()
 async def sendMatch(ctx):
-  await matchUsers(ctx)
-
-@tasks.loop(minutes=60)
-async def checkSchedule(ctx):
-  schedule = match.generateSchedule()
-  currentTime = datetime.now()
-  time = currentTime.strftime("%H:%M")
-  day = currentTime.strtime("%A")
-
-  if schedule.getFrequency() == DAILY:
-    if time == schedule.getTime():
-      await matchUsers(ctx)
-  elif schedule.getFrequency() == WEEKLY:
-    if time == schedule.getTime() and day == schedule.getDay():
-      await matchUsers(ctx)
-
-@tasks.loop(minutes=1)
-async def testCheckSchedule(ctx):
   await matchUsers(ctx)
 
 async def matchUsers(ctx):
