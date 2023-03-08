@@ -1,9 +1,12 @@
 import discord
 from discord.ext import commands, tasks
 import os
-import datetime
 import pymongo
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+import asyncio
+import time
+print(time.tzname)
 
 from keep_alive import keep_alive
 from schedule_match import MatchSchedule
@@ -22,7 +25,7 @@ match = Match()
 client = pymongo.MongoClient(mongoURI)
 db = client.get_database("comp4905")
 
-scheduler = BackgroundScheduler()
+scheduler = AsyncIOScheduler()
 SCHEDULE_NAME = "Bot Schedule"
 
 @bot.event
@@ -83,12 +86,16 @@ async def setMatchSchedule(ctx, frequency=None, time=None, day=None):
       scheduler.remove_all_jobs()
       
     if frequency == DAILY:
-      scheduler.add_job(sendMatch, "interval", name="schedule", args=[ctx], hours=hour, minutes = min)
+      job = scheduler.add_job(matchUsers, "interval", name="schedule", args=[ctx], hours=hour, minutes = min)
+
+      print(job)
       
     elif frequency == WEEKLY:
       
-      day = day.lower()
-      scheduler.add_job(sendMatch, "interval", args=[ctx], day_of_week=day, hours=hour, minutes = min)
+      day = day.lower()[:3]
+      job = scheduler.add_job(matchUsers, "cron", args=[ctx], day_of_week=day, hour=hour, minute = min)
+
+      print(job)
     
   confirmationMessage = "Schedule has been set to " + frequency + " " + time
 
