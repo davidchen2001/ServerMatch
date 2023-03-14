@@ -2,11 +2,9 @@ import discord
 from discord.ext import commands, tasks
 import os
 import pymongo
-from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import asyncio
 import time
-print(time.tzname)
 
 from keep_alive import keep_alive
 from schedule_match import MatchSchedule
@@ -86,17 +84,13 @@ async def setMatchSchedule(ctx, frequency=None, time=None, day=None):
       scheduler.remove_all_jobs()
       
     if frequency == DAILY:
-      job = scheduler.add_job(matchUsers, "interval", name="schedule", args=[ctx], hours=hour, minutes = min)
+      scheduler.add_job(matchUsers, "interval", name="schedule", args=[ctx], hours=hour, minutes = min)
 
-      print(job)
-      
     elif frequency == WEEKLY:
       
       day = day.lower()[:3]
-      job = scheduler.add_job(matchUsers, "cron", args=[ctx], day_of_week=day, hour=hour, minute = min)
+      scheduler.add_job(matchUsers, "cron", args=[ctx], day_of_week=day, hour=hour, minute = min)
 
-      print(job)
-    
   confirmationMessage = "Schedule has been set to " + frequency + " " + time
 
   if day != None:
@@ -181,7 +175,7 @@ async def setIntroduction(ctx, *, introduction):
 
       if member != None:
         update = { "$set" : {"introduction": introduction} }
-        members.update(member, update)
+        members.update_one(member, update)
         
       else:
         newUser = Member(user.id, user.discriminator, user.name, user.roles)
