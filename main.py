@@ -82,14 +82,18 @@ async def setMatchSchedule(ctx, frequency=None, time=None, day=None):
 
     if match_schedule.getInitialized() == True:
       scheduler.remove_all_jobs()
+      print("HERE")
       
     if frequency == DAILY:
-      scheduler.add_job(matchUsers, "interval", name="schedule", args=[ctx], hours=hour, minutes = min)
+      #job = scheduler.add_job(matchUsers, "interval", name="schedule", args=[ctx], hours=hour, minutes = min)
+      job = scheduler.add_job(matchUsers, "cron", name = "schedule", args=[ctx], hour=hour, minute=min)
+      print(job)
 
     elif frequency == WEEKLY:
       
       day = day.lower()[:3]
-      scheduler.add_job(matchUsers, "cron", args=[ctx], day_of_week=day, hour=hour, minute = min)
+      job = scheduler.add_job(matchUsers, "cron", args=[ctx], day_of_week=day, hour=hour, minute = min)
+      print(job)
 
   confirmationMessage = "Schedule has been set to " + frequency + " " + time
 
