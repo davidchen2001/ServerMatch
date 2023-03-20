@@ -10,7 +10,7 @@ from keep_alive import keep_alive
 from schedule_match import MatchSchedule
 from schedule_match import DAILY, WEEKLY
 from member import Member
-from match import Match
+from match import Match, INTRODUCTION_EXAMPLE, INTRODUCTION_FORMAT
 from config import mongoURI
 
 bot = commands.Bot(command_prefix="!",
@@ -176,6 +176,14 @@ async def matchUsers(ctx):
 
 def parseSchedule():
   return match_schedule.generateSchedule()
+
+@bot.command()
+async def introductionFormat(ctx):
+  message = INTRODUCTION_FORMAT
+  message += "\n **Here is an example:** \n"
+  message += INTRODUCTION_EXAMPLE
+  await ctx.channel.send(message)
+  
 
 @bot.command()
 async def setIntroduction(ctx, *, introduction):
