@@ -10,7 +10,7 @@ from keep_alive import keep_alive
 from schedule_match import MatchSchedule
 from schedule_match import DAILY, WEEKLY
 from member import Member
-from match import Match, INTRODUCTION_EXAMPLE, INTRODUCTION_FORMAT
+from match import Match, INTRODUCTION_EXAMPLE, INTRODUCTION_FORMAT, checkIntroduction
 from config import mongoURI
 
 bot = commands.Bot(command_prefix="!",
@@ -184,27 +184,32 @@ async def introductionFormat(ctx):
   message += INTRODUCTION_EXAMPLE
   await ctx.channel.send(message)
   
-
 @bot.command()
 async def setIntroduction(ctx, *, introduction):
 
-  members = db.members
-  
-  for user in ctx.guild.members:
+  if checkIntroduction(introduction) == True:
+    members = db.members
     
-    if user.id == ctx.author.id:
-
-      member = members.find_one({"_id": user.id})
-
-      if member != None:
-        update = { "$set" : {"introduction": introduction} }
-        members.update_one(member, update)
-        
-      else:
-        newUser = Member(user.id, user.discriminator, user.name, user.roles)
-        newUser.setIntroduction(introduction)
-        
-        members.insert_one(newUser.toIntroductionDict())    
+    for user in ctx.guild.members:
+      
+      if user.id == ctx.author.id:
+  
+        member = members.find_one({"_id": user.id})
+  
+        if member != None:
+          update = { "$set" : {"introduction": introduction} }
+          members.update_one(member, update)
+          
+        else:
+          newUser = Member(user.id, user.discriminator, user.name, user.roles)
+          newUser.setIntroduction(introduction)
+          
+          members.insert_one(newUser.toIntroductionDict())
+  else:
+    message = "Introduction needs to follow format:\n"
+    message += INTRODUCTION_FORMAT
+    message += "\n Run command **!introductionFormat** for more info."
+    await ctx.channel.send(message)
 
 try:
     my_secret = os.environ['DISCORD_BOT_SECRET']

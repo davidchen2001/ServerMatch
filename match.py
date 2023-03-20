@@ -7,6 +7,15 @@ INTRODUCTION_FORMAT = "Name: \nGroup Match: 1-4 (1 by default)\nProgram: \nYear:
 
 INTRODUCTION_EXAMPLE = "Name: David\nGroup Match: 2\nProgram: CS\nYear: 4th\nHometown: Ottawa\nFavourite Anime: Spy X Family, Demon Slayer, Your Lie In April \nFun-Fact: I created this bot!\nMessage: Hi I'm David! I'm in my 4th year studying CS. Looking forward to chatting!"
 
+def checkIntroduction(introduction):
+
+  introduction = introduction.lower()
+  
+  #Check for name
+  isName = "name:" not in introduction
+
+  return not isName
+
 class Match:
 
   __algorithm = ""
