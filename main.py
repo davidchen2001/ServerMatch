@@ -64,6 +64,18 @@ async def createRolesChannel(ctx):
     await ctx.channel.send("roles channel already exists")
 
 @bot.command()
+async def getCoffeeChatRole(ctx):
+  member = ctx.message.author
+  role = discord.utils.get(member.guild.roles, name="Coffee Chat")
+  await member.add_roles(role)
+
+@bot.command()
+async def removeCoffeeChatRole(ctx):
+  member = ctx.message.author
+  role = discord.utils.get(member.guild.roles, name="Coffee Chat")
+  await member.remove_roles(role)
+
+@bot.command()
 async def directMessage(ctx, user: discord.User, *, message=None):
     message = message or "This Message is sent via DM"
     await user.send(message)
@@ -82,7 +94,6 @@ async def setMatchSchedule(ctx, frequency=None, time=None, day=None):
 
     if match_schedule.getInitialized() == True:
       scheduler.remove_all_jobs()
-      print("HERE")
       
     if frequency == DAILY:
       #job = scheduler.add_job(matchUsers, "interval", name="schedule", args=[ctx], hours=hour, minutes = min)
