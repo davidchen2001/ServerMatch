@@ -207,7 +207,6 @@ async def setIntroduction(ctx, *, introduction):
         members.insert_one(newUser.toIntroductionDict())    
 
 try:
-    #keep_alive()
     my_secret = os.environ['DISCORD_BOT_SECRET']
     bot.run(my_secret)
   
