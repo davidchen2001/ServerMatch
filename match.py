@@ -1,4 +1,4 @@
-from config import mongoURI
+from heap import MaxHeap
 import random
 
 DEFAULT = "RANDOM"
