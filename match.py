@@ -1,8 +1,7 @@
 from heap import MaxHeap
 import random
 
-DEFAULT = "RANDOM"
-RECOMMEND = "RECOMMENDER"
+MAX_MATCHES = 4
 
 INTRODUCTION_FORMAT = "Name: \nGroup Match: 1-4 (1 by default)\nProgram: \nYear: \n (Feel free to add more fields! Just make sure each field has a \":\" to separate the labels and that each field exists on a newline."
 
@@ -60,8 +59,25 @@ def createMatches(users):
         otherUser = users[j]
         otherKeywords = parseIntroduction(otherUser.getIntroduction())
 
-        similarity = dice_coefficient()
+        numSameKeywords = sameKeywords(keywords, otherKeywords)
+        totalKeywords = len(keywords) + len(otherKeywords)
+        similarity = diceCoefficient(numSameKeywords, totalKeywords)
+        heap.add(similarity, otherUser)
 
+   for i in range(len(users)):
+    matchedUsers = []
+    user = users[i]
+
+    for j in range(MAX_MATCHES):
+
+      if heap.isEmpty() == False:
+
+        match = heap.pop()
+        matchedUsers.append(match)
+    
+    matches[user.getId()] = matchedUsers
+
+   return matches
 
 def parseIntroduction(introduction):
     userKeywords = []
@@ -77,5 +93,15 @@ def parseIntroduction(introduction):
 
     return userKeywords
   
-def dice_coefficient(num_same, num_keywords):
-    return (2 * num_same)/num_keywords
+def diceCoefficient(numSame, numKeywords):
+    return (2 * numSame)/numKeywords
+
+def sameKeywords(keywords, otherKeywords):
+
+  numSame = 0
+  for keyword in keywords:
+
+    if keyword in otherKeywords:
+      numSame += 1
+
+  return numSame 

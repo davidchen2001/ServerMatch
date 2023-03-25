@@ -22,6 +22,10 @@ class PriorityQueue:
     def __len__(self):
         return len(self.heap)
 
+    def isEmpty(self):
+
+      return self.__len__(self) == 0
+
 class MaxHeap(PriorityQueue):
 
   def __init__(self):
