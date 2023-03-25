@@ -10,7 +10,7 @@ from keep_alive import keep_alive
 from schedule_match import MatchSchedule
 from schedule_match import DAILY, WEEKLY
 from member import Member
-from match import Match, INTRODUCTION_EXAMPLE, INTRODUCTION_FORMAT, checkIntroduction
+from match import randomMatch, INTRODUCTION_EXAMPLE, INTRODUCTION_FORMAT, checkIntroduction
 from config import mongoURI
 
 bot = commands.Bot(command_prefix="!",
@@ -18,7 +18,6 @@ bot = commands.Bot(command_prefix="!",
                       intents=discord.Intents.all())
 
 match_schedule = MatchSchedule()
-match = Match()
 
 client = pymongo.MongoClient(mongoURI)
 db = client.get_database("comp4905")
@@ -155,7 +154,7 @@ async def matchUsers(ctx):
       userToIdMap[user] = user.id
       listOfUsers.append(newUser)
 
-  matches = match.randomMatch(listOfUsers)
+  matches = randomMatch(listOfUsers)
 
   for user in ctx.guild.members:
     if role in user.roles:

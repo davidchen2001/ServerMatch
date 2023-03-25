@@ -17,14 +17,7 @@ def checkIntroduction(introduction):
 
   return not isName
 
-class Match:
-
-  __algorithm = ""
-
-  def __init__(self):
-    self.__algorithm = DEFAULT
-
-  def randomMatch(self, users):
+def randomMatch(users):
     matches = {}
 
     n = 0 
@@ -53,47 +46,24 @@ class Match:
     #Consider number of desired matches
     return matches
 
-  def recommenderMatch(self, users):
+def createMatches(users):
+   matches = {}
 
-    #For every pair of users - (2 x number of same keywords)/total_keywords
+   for i in range(len(users)):
+    user = users[i]
+    heap = MaxHeap()
+    keywords = parseIntroduction(user.getIntroduction())
 
-    matches = {}
+    for j in range(len(users)):
 
-    for i in range(len(users)):
+      if j != i:
+        otherUser = users[j]
+        otherKeywords = parseIntroduction(otherUser.getIntroduction())
 
-      max_coefficient = 0
-      max_coefficient_index = 0
-      introduction = users[i].getIntroduction()
-      userKeywords = self.__parseIntroduction__(introduction)
+        similarity = dice_coefficient()
 
-      for j in range(len(users)):
 
-        otherIntroduction = users[j].getIntroduction()
-        otherKeywords = self.__parseIntroduction__(otherIntroduction)
-
-        for keyword in userKeywords:
-
-          num_same = 0
-          if keyword in otherKeywords:
-            num_same += 1
-
-        total_keywords = len(userKeywords) + len(otherKeywords)
-        dice_coefficient = self.__dice_coefficient__(num_same, total_keywords)
-
-        if max_coefficient < dice_coefficient:
-          max_coefficient = dice_coefficient
-          max_coefficient_index = j 
-
-      firstUser = users[i].getId()
-      secondUser = users[max_coefficient_index].getId()
-      matches[firstUser.getId()] = secondUser.getId()
-      
-    return matches
-          
-  def __dice_coefficient__(self, num_same, num_keywords):
-    return (2 * num_same)/num_keywords
-
-  def __parseIntroduction__(self, introduction):
+def parseIntroduction(introduction):
     userKeywords = []
           
     data = introduction.split('\n')
@@ -106,4 +76,6 @@ class Match:
       userKeywords.append(keyword.lower())
 
     return userKeywords
-    
+  
+def dice_coefficient(num_same, num_keywords):
+    return (2 * num_same)/num_keywords
