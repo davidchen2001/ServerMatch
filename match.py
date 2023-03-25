@@ -18,28 +18,20 @@ def checkIntroduction(introduction):
 
 def randomMatch(users):
     matches = {}
+    
+    max = len(users)
 
-    n = 0 
+    for i in range(max):
+      matchedUsers = []
+      
+      user = users[i]
+      randomIndex = random.randint(0, max-1)
 
-    while n < len(users):
-
-      max = len(users)
-
-      firstIndex = random.randint(0, max-1)
-      firstUser = users[firstIndex]
-
-      users.pop(firstIndex)
-
-      max = len(users)
-      secondIndex = random.randint(0, max-1)
-      secondUser = users[secondIndex]
-
-      users.pop(secondIndex)
-
-      matches[firstUser.getId()] = secondUser.getId()
-      matches[secondUser.getId()] = firstUser.getId()
-
-      n += 2
+      while randomIndex == i:
+        randomIndex = random.randint(0, max-1)
+      secondUser = users[randomIndex]
+      matchedUsers.append(secondUser)
+      matches[user.getId()] = matchedUsers
 
     #Consider case of odd number of matches
     #Consider number of desired matches

@@ -160,13 +160,16 @@ async def matchUsers(ctx):
     if role in user.roles:
       id = userToIdMap[user]
       firstUser = userIdMap[id]
-      secondUserId = matches[id]
-      secondUser = userIdMap[secondUserId]
+
+      matchedUsers = matches[id]
+      directMessage = ""
+
+      for match in matchedUsers:
+        secondUser = userIdMap[match.getId()]
+        directMessage += firstUser.createMessage(secondUser)
+        directMessage += "\n"
       
       try:
-        
-        directMessage = firstUser.createMessage(secondUser)
-        
         await user.send(directMessage)
         
       except:
