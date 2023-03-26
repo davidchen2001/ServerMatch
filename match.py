@@ -43,12 +43,14 @@ def createMatches(users):
    for i in range(len(users)):
     user = users[i]
     heap = MaxHeap()
+    
     keywords = parseIntroduction(user.getIntroduction())
 
     for j in range(len(users)):
-
+      
       if j != i:
         otherUser = users[j]
+        
         otherKeywords = parseIntroduction(otherUser.getIntroduction())
 
         numSameKeywords = sameKeywords(keywords, otherKeywords)
@@ -78,9 +80,7 @@ def parseIntroduction(introduction):
 
     for pair in data:
       label = pair.split(":")[0]
-      keywords = pair.split(":")[1]
-
-    for keyword in keywords:
+      keyword = pair.split(":")[1]
       userKeywords.append(keyword.lower())
 
     return userKeywords

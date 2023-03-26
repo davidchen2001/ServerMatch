@@ -10,7 +10,7 @@ from keep_alive import keep_alive
 from schedule_match import MatchSchedule
 from schedule_match import DAILY, WEEKLY
 from member import Member
-from match import randomMatch, INTRODUCTION_EXAMPLE, INTRODUCTION_FORMAT, checkIntroduction
+from match import randomMatch, INTRODUCTION_EXAMPLE, INTRODUCTION_FORMAT, checkIntroduction, createMatches
 from config import mongoURI
 
 bot = commands.Bot(command_prefix="!",
@@ -154,7 +154,8 @@ async def matchUsers(ctx):
       userToIdMap[user] = user.id
       listOfUsers.append(newUser)
 
-  matches = randomMatch(listOfUsers)
+  #matches = randomMatch(listOfUsers)
+  matches = createMatches(listOfUsers)
 
   for user in ctx.guild.members:
     if role in user.roles:

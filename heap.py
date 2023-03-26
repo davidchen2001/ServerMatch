@@ -4,7 +4,7 @@ class PriorityQueue:
     def __init__(self):
         self.__heap = []
 
-    def add(self, val, key=0):
+    def add(self, key, val):
         heapq.heappush(self.__heap, (key, val))
     
     def pop(self):
@@ -20,16 +20,16 @@ class PriorityQueue:
         return False
 
     def __len__(self):
-        return len(self.heap)
+        return len(self.__heap)
 
     def isEmpty(self):
 
-      return self.__len__(self) == 0
+      return self.__len__() == 0
 
 class MaxHeap(PriorityQueue):
 
   def __init__(self):
-    PriorityQueue.__init__(self)
+    super().__init__()
   
-  def add(self, val, key=0):
-    heapq.heappush(self.__heap, (-1 * key, val))
+  def add(self, key, val):
+    super().add(-1 * key, val)
