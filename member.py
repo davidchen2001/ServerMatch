@@ -7,11 +7,13 @@ class Member:
   __name = ""
   __roles = []
   __introduction = ""
+  __group_matches = 0
 
   def __init__(self, id, tag, name, roles):
     self.__id = id
     self.__tag = tag 
     self.__name = name
+    self.__group_matches = 0
 
     for role in roles:
       if role.name != "@everyone":
@@ -29,11 +31,17 @@ class Member:
   def getRoles(self):
     return self.__roles
 
+  def getIntroduction(self):
+    return self.__introduction
+
+  def getGroupMatches(self):
+    return self.__group_matches
+  
   def setIntroduction(self, introduction):
     self.__introduction = introduction
 
-  def getIntroduction(self):
-    return self.__introduction
+  def setGroupMatches(self, group_matches):
+    self.__group_matches = group_matches
 
   def createMessage(self, otherUser):
     

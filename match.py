@@ -2,6 +2,7 @@ from heap import MaxHeap
 import random
 
 MAX_MATCHES = 4
+GROUP_MATCH_LABEL = "group match"
 
 INTRODUCTION_FORMAT = "Name: \nGroup Match: 1-4 (1 by default)\nProgram: \nYear: \n (Feel free to add more fields! Just make sure each field has a \":\" to separate the labels and that each field exists on a newline."
 
@@ -62,7 +63,7 @@ def createMatches(users):
     matchedUsers = []
     user = users[i]
 
-    for j in range(MAX_MATCHES):
+    for j in range(MAX_MATCHES+1):
 
       if heap.isEmpty() == False:
 
@@ -75,6 +76,7 @@ def createMatches(users):
 
 def parseIntroduction(introduction):
     userKeywords = []
+    userLabels = []
           
     data = introduction.split('\n')
 
@@ -82,8 +84,9 @@ def parseIntroduction(introduction):
       label = pair.split(":")[0]
       keyword = pair.split(":")[1]
       userKeywords.append(keyword.lower())
+      userLabels.append(label.lower())
 
-    return userKeywords
+    return userKeywords, userLabels
   
 def diceCoefficient(numSame, numKeywords):
     return (2 * numSame)/numKeywords
@@ -97,3 +100,23 @@ def sameKeywords(keywords, otherKeywords):
       numSame += 1
 
   return numSame 
+
+def findGroupMatches(user):
+
+  introduction = user.getIntroduction()
+  keywords, labels = parseIntroduction(introduction)
+
+  if GROUP_MATCH_LABEL in labels:
+
+    index = 0
+    while index < len(keywords):
+      if labels[index] == GROUP_MATCH_LABEL:
+        numGroupMatches = int(keywords[index])
+        if numGroupMatches > 0 and numGroupMatches <= MAX_MATCHES:
+          return numGroupMatches
+        else:
+          return 1 
+
+      index += 1
+
+  return 1

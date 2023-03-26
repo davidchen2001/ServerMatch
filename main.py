@@ -10,7 +10,7 @@ from keep_alive import keep_alive
 from schedule_match import MatchSchedule
 from schedule_match import DAILY, WEEKLY
 from member import Member
-from match import randomMatch, INTRODUCTION_EXAMPLE, INTRODUCTION_FORMAT, checkIntroduction, createMatches
+from match import randomMatch, INTRODUCTION_EXAMPLE, INTRODUCTION_FORMAT, checkIntroduction, createMatches, findGroupMatches
 from config import mongoURI
 
 bot = commands.Bot(command_prefix="!",
@@ -164,11 +164,14 @@ async def matchUsers(ctx):
 
       matchedUsers = matches[id]
       directMessage = ""
+      groupMatches = findGroupMatches(firstUser)
+      groupCount = 0
 
       for match in matchedUsers:
-        secondUser = userIdMap[match.getId()]
-        directMessage += firstUser.createMessage(secondUser)
-        directMessage += "\n"
+        if groupCount < groupMatches:
+          secondUser = userIdMap[match.getId()]
+          directMessage += firstUser.createMessage(secondUser)
+          directMessage += "\n"
       
       try:
         await user.send(directMessage)
