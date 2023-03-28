@@ -40,6 +40,7 @@ def randomMatch(users):
 
 def createMatches(users):
    matches = {}
+   heaps = []
 
    for i in range(len(users)):
     user = users[i]
@@ -48,9 +49,9 @@ def createMatches(users):
     keywords = parseIntroduction(user.getIntroduction())
 
     for j in range(len(users)):
-      
-      if j != i:
-        otherUser = users[j]
+
+      otherUser = users[j]
+      if j != i and user.getId() != otherUser.getId():
         
         otherKeywords = parseIntroduction(otherUser.getIntroduction())
 
@@ -59,15 +60,17 @@ def createMatches(users):
         similarity = diceCoefficient(numSameKeywords, totalKeywords)
         heap.add(similarity, otherUser)
 
+      heaps.append(heap)
+
    for i in range(len(users)):
     matchedUsers = []
     user = users[i]
 
     for j in range(MAX_MATCHES+1):
 
-      if heap.isEmpty() == False:
+      if heaps[i].isEmpty() == False:
 
-        match = heap.pop()
+        match = heaps[i].pop()
         matchedUsers.append(match)
     
     matches[user.getId()] = matchedUsers
