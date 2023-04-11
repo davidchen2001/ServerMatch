@@ -86,7 +86,14 @@ def parseIntroduction(introduction):
     for pair in data:
       label = pair.split(":")[0]
       keyword = pair.split(":")[1]
-      userKeywords.append(keyword.lower())
+
+      if "," in keyword:
+        keywords = keyword.split(",")
+
+        for word in keywords:
+          userKeywords.append(word.lower())
+      else:
+        userKeywords.append(keyword.lower())
       userLabels.append(label.lower())
 
     return userKeywords, userLabels

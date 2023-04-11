@@ -52,15 +52,15 @@ async def hello(ctx):
   await ctx.channel.send("Hello World!")
 
 @bot.command()
-async def createRolesChannel(ctx):
+async def createBotChannel(ctx):
   channel = discord.utils.get(bot.get_all_channels(), guild__name=ctx.message.guild.name, name='roles')
 
   guild = ctx.guild
 
   if channel == None and ctx.author.guild_permissions.manage_channels:
-    await guild.create_text_channel(name="roles")
+    await guild.create_text_channel(name="server-match-bot")
   else:
-    await ctx.channel.send("roles channel already exists")
+    await ctx.channel.send("server-match-bot channel already exists")
 
 @bot.command()
 async def getCoffeeChatRole(ctx):
