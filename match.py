@@ -63,8 +63,8 @@ def createMatches(users):
         
         heap.add(similarity, otherUser)
 
-      heaps.append(heap)
-      
+    heaps.append(heap)
+
    for i in range(len(users)):
     matchedUsers = []
     user = users[i]

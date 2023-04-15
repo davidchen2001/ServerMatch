@@ -154,7 +154,6 @@ async def matchUsers(ctx):
       userToIdMap[user] = user.id
       listOfUsers.append(newUser)
 
-  #matches = randomMatch(listOfUsers)
   matches = createMatches(listOfUsers)
 
   for user in ctx.guild.members:
@@ -163,6 +162,7 @@ async def matchUsers(ctx):
       firstUser = userIdMap[id]
 
       matchedUsers = matches[id]
+      
       directMessage = ""
       groupMatches = findGroupMatches(firstUser)
       groupCount = 0
@@ -172,6 +172,7 @@ async def matchUsers(ctx):
           secondUser = userIdMap[match.getId()]
           directMessage += firstUser.createMessage(secondUser)
           directMessage += "\n"
+          groupCount += 1
       
       try:
         await user.send(directMessage)
