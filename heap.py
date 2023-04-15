@@ -1,14 +1,16 @@
 import heapq
+import time 
 
 class PriorityQueue:
     def __init__(self):
         self.__heap = []
 
     def add(self, key, val):
-        heapq.heappush(self.__heap, (key, val))
+        seconds = time.time()
+        heapq.heappush(self.__heap, (key, seconds, val))
     
     def pop(self):
-        key, val = heapq.heappop(self.__heap)
+        key, time, val = heapq.heappop(self.__heap)
         return val
 
     def findNode(self, node):
@@ -33,3 +35,4 @@ class MaxHeap(PriorityQueue):
   
   def add(self, key, val):
     super().add(-1 * key, val)
+    

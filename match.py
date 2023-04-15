@@ -54,14 +54,17 @@ def createMatches(users):
       if j != i and user.getId() != otherUser.getId():
         
         otherKeywords = parseIntroduction(otherUser.getIntroduction())
-
+        
         numSameKeywords = sameKeywords(keywords, otherKeywords)
+        
         totalKeywords = len(keywords) + len(otherKeywords)
+        
         similarity = diceCoefficient(numSameKeywords, totalKeywords)
+        
         heap.add(similarity, otherUser)
 
       heaps.append(heap)
-
+      
    for i in range(len(users)):
     matchedUsers = []
     user = users[i]
