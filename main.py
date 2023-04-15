@@ -13,6 +13,8 @@ from member import Member
 from match import randomMatch, INTRODUCTION_EXAMPLE, INTRODUCTION_FORMAT, checkIntroduction, createMatches, findGroupMatches
 from config import mongoURI
 
+INTRODUCTION_KEY = "introduction"
+
 bot = commands.Bot(command_prefix="!",
                       case_insensitive = True,
                       intents=discord.Intents.all())
@@ -180,6 +182,13 @@ async def matchUsers(ctx):
       except:
         
         print("Message Not Delivered")
+
+@bot.command()
+async def getIntroduction(ctx):
+  member = ctx.message.author
+  members = db.members
+  findMember = members.find_one({"_id": member.id})
+  await ctx.channel.send(str(findMember[INTRODUCTION_KEY]))
 
 def parseSchedule():
   return match_schedule.generateSchedule()
