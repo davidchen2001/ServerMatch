@@ -6,7 +6,6 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import asyncio
 import time
 
-from keep_alive import keep_alive
 from schedule_match import MatchSchedule
 from schedule_match import DAILY, WEEKLY
 from member import Member
