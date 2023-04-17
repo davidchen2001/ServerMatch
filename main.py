@@ -97,7 +97,7 @@ async def setMatchSchedule(ctx, frequency=None, time=None, day=None):
       scheduler.remove_all_jobs()
       
     if frequency == DAILY:
-      #job = scheduler.add_job(matchUsers, "interval", name="schedule", args=[ctx], hours=hour, minutes = min)
+      
       job = scheduler.add_job(matchUsers, "cron", name = "schedule", args=[ctx], hour=hour, minute=min)
       print(job)
 
