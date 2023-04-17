@@ -46,14 +46,14 @@ def createMatches(users):
     user = users[i]
     heap = MaxHeap()
     
-    keywords = parseIntroduction(user.getIntroduction())
+    keywords, labels = parseIntroduction(user.getIntroduction())
 
     for j in range(len(users)):
 
       otherUser = users[j]
       if j != i and user.getId() != otherUser.getId():
         
-        otherKeywords = parseIntroduction(otherUser.getIntroduction())
+        otherKeywords, otherLabels = parseIntroduction(otherUser.getIntroduction())
         
         numSameKeywords = sameKeywords(keywords, otherKeywords)
         
@@ -97,8 +97,8 @@ def parseIntroduction(introduction):
           userKeywords.append(word.lower())
       else:
         userKeywords.append(keyword.lower())
+        
       userLabels.append(label.lower())
-
     return userKeywords, userLabels
   
 def diceCoefficient(numSame, numKeywords):
