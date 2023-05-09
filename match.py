@@ -49,7 +49,7 @@ def createMatches(users):
     keywords, labels = parseIntroduction(user.getIntroduction())
 
     for j in range(len(users)):
-
+      
       otherUser = users[j]
       if j != i and user.getId() != otherUser.getId():
         
@@ -64,7 +64,7 @@ def createMatches(users):
         heap.add(similarity, otherUser)
 
     heaps.append(heap)
-
+  
    for i in range(len(users)):
     matchedUsers = []
     user = users[i]
@@ -89,7 +89,7 @@ def parseIntroduction(introduction):
     for pair in data:
       label = pair.split(":")[0]
       keyword = pair.split(":")[1]
-
+      
       if "," in keyword:
         keywords = keyword.split(",")
 
